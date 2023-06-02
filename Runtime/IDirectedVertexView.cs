@@ -1,4 +1,4 @@
-namespace GraphNet
+namespace Spundio.GraphNet
 {
     public interface IDirectedVertexView<TVertexKey, TVertexValue, TEdgeValue> : IVertexView<TVertexKey, TVertexValue, TEdgeValue>
     {

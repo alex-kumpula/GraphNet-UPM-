@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace GraphNet
+namespace Spundio.GraphNet
 {
     public interface IUndirectedVertexView<TVertexKey, TVertexValue, TEdgeValue> : IVertexView<TVertexKey, TVertexValue, TEdgeValue>
     {

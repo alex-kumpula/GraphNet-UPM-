@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace GraphNet
+namespace Spundio.GraphNet
 {
     public interface IDirectionalView<TVertexKey, TVertexValue, TEdgeValue>
     {

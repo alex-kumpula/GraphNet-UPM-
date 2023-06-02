@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using Newtonsoft.Json;
 
-namespace GraphNet
+namespace Spundio.GraphNet
 {
     [JsonObject(MemberSerialization.OptIn)]
     public class UndirectedGraph<TVertexKey, TVertexValue, TEdgeValue> : IUndirectedGraph<TVertexKey, TVertexValue, TEdgeValue>

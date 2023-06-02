@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace GraphNet
+namespace Spundio.GraphNet
 {
     public interface IDirectedGraph<TVertexKey, TVertexValue, TEdgeValue> : IGraph<TVertexKey, TVertexValue, TEdgeValue>
     {
