@@ -6,6 +6,7 @@
 	"author": "Alex Kumpula",
 	"description": "Simple graph data structures for C#",
 	"dependencies": {
+        "com.unity.nuget.newtonsoft-json": "3.0.2"
 	},
 	"repository": {
 		"type": "git",
