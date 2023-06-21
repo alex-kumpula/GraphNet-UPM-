@@ -1,8 +1,9 @@
 using System.Collections.Generic;
+using System.Runtime.Serialization;
 
 namespace Spundio.GraphNet
 {
-    public interface IGraph<TVertexKey, TVertexValue, TEdgeValue>
+    public interface IGraph<TVertexKey, TVertexValue, TEdgeValue> : ISerializable
     {
         /// <summary>
         /// An enumerable of every vertex key in this graph.

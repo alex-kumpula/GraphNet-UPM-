@@ -1,16 +1,16 @@
 using System.Collections.Generic;
 using Newtonsoft.Json;
+using System.Runtime.Serialization;
+using System;
+using System.Linq;
 
 namespace Spundio.GraphNet
 {
-    [JsonObject(MemberSerialization.OptIn)]
+    [Serializable]
     public class DirectedGraph<TVertexKey, TVertexValue, TEdgeValue> : IDirectedGraph<TVertexKey, TVertexValue, TEdgeValue>
     {
-        [JsonProperty("Vertices")]
         private IDictionary<TVertexKey, TVertexValue> _vertices;
-        [JsonProperty("Successors")]
         private IDictionary<TVertexKey, IDictionary<TVertexKey, TEdgeValue>> _successors;
-        [JsonProperty("Predecessors")]
         private IDictionary<TVertexKey, IDictionary<TVertexKey, TEdgeValue>> _predecessors;
 
         public DirectedGraph()
@@ -18,6 +18,23 @@ namespace Spundio.GraphNet
             this._vertices = VertexDictionaryFactory();
             this._successors = GraphDictionaryFactory();
             this._predecessors = GraphDictionaryFactory();
+        }
+
+        // Constructor for ISerializable
+        public DirectedGraph(SerializationInfo info, StreamingContext context) : this()
+        {
+            this._vertices = info.GetValue("Vertices", typeof(IDictionary<TVertexKey, TVertexValue>)) as IDictionary<TVertexKey, TVertexValue>;
+            this._successors = info.GetValue("Successors", typeof(IDictionary<TVertexKey, IDictionary<TVertexKey, TEdgeValue>>)) as IDictionary<TVertexKey, IDictionary<TVertexKey, TEdgeValue>>;
+
+            // Reconstruct _predecessors from _successors
+            foreach (var vertexFrom in this._successors)
+            {
+                foreach (var vertexTo in vertexFrom.Value)
+                {
+                    this._predecessors.TryAdd<TVertexKey, IDictionary<TVertexKey, TEdgeValue>>(vertexTo.Key, this.EdgeDictionaryFactory());
+                    this._predecessors[vertexTo.Key][vertexFrom.Key] = this._successors[vertexFrom.Key][vertexTo.Key];
+                }
+            }
         }
 
         public IEnumerable<TVertexKey> Keys
@@ -230,6 +247,12 @@ namespace Spundio.GraphNet
         public IDictionary<TVertexKey, TEdgeValue> EdgeDictionaryFactory()
         {
             return new Dictionary<TVertexKey, TEdgeValue>();
+        }
+    
+        void ISerializable.GetObjectData(SerializationInfo info, StreamingContext context)
+        {
+            info.AddValue("Vertices", this._vertices);
+            info.AddValue("Successors", this._successors);
         }
     }
 

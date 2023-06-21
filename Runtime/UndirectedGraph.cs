@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using Newtonsoft.Json;
+using System.Runtime.Serialization;
 
 namespace Spundio.GraphNet
 {
@@ -182,6 +183,12 @@ namespace Spundio.GraphNet
         public IDictionary<TVertexKey, TEdgeValue> EdgeDictionaryFactory()
         {
             return new Dictionary<TVertexKey, TEdgeValue>();
+        }
+
+
+        public void GetObjectData(SerializationInfo info, StreamingContext context)
+        {
+            // info.AddValue()
         }
     }
 
