@@ -5,6 +5,4 @@ namespace Spundio.GraphNet
         TVertexKey Key { get; }
         TVertexValue Value { get; set; }
     }
-
-
 }

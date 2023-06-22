@@ -45,7 +45,7 @@ namespace Spundio.GraphNet
             get { return this.Graph.GetPredecessorValues(this.Key); }
         }
 
-        public IEnumerable<KeyValuePair<TVertexKey, TVertexValue>> Verticies
+        public IEnumerable<KeyValuePair<TVertexKey, TVertexValue>> Vertices
         {
             get
             {

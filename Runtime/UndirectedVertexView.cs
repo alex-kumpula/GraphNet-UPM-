@@ -62,6 +62,4 @@ namespace Spundio.GraphNet
             return this.Edges.GetEnumerator();
         }
     }
-
-
 }

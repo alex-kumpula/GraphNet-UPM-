@@ -1,9 +1,8 @@
 using System.Collections.Generic;
-using System.Runtime.Serialization;
 
 namespace Spundio.GraphNet
 {
-    public interface IGraph<TVertexKey, TVertexValue, TEdgeValue> : ISerializable
+    public interface IGraph<TVertexKey, TVertexValue, TEdgeValue>
     {
         /// <summary>
         /// An enumerable of every vertex key in this graph.
@@ -37,7 +36,7 @@ namespace Spundio.GraphNet
         void AddVertex(TVertexKey vertexKey, TVertexValue vertexValue);
 
         /// <summary>
-        /// Adds an edge between two verticies to the graph.
+        /// Adds an edge between two vertices to the graph.
         /// </summary>
         /// <param name="vertexKeyFrom">The key of the first vertex.</param>
         /// <param name="vertexKeyTo">The key of the second vertex.</param>
@@ -51,7 +50,7 @@ namespace Spundio.GraphNet
         void RemoveVertex(TVertexKey vertexKey);
 
         /// <summary>
-        /// Removes an edge between two verticies from the graph.
+        /// Removes an edge between two vertices from the graph.
         /// </summary>
         /// <param name="vertexKeyFrom">The key of the first vertex.</param>
         /// <param name="vertexKeyTo">The key of the second vertex.</param>
@@ -65,7 +64,7 @@ namespace Spundio.GraphNet
         bool VertexExists(TVertexKey vertexKey);
 
         /// <summary>
-        /// Checks if an edge between two verticies exists in the graph.
+        /// Checks if an edge between two vertices exists in the graph.
         /// </summary>
         /// <param name="vertexKeyFrom">The key of the first vertex.</param>
         /// <param name="vertexKeyTo">The key of the second vertex.</param>

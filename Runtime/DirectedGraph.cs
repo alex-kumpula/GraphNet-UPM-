@@ -1,17 +1,30 @@
 using System.Collections.Generic;
-using Newtonsoft.Json;
-using System.Runtime.Serialization;
-using System;
-using System.Linq;
 
 namespace Spundio.GraphNet
 {
-    [Serializable]
     public class DirectedGraph<TVertexKey, TVertexValue, TEdgeValue> : IDirectedGraph<TVertexKey, TVertexValue, TEdgeValue>
     {
-        private IDictionary<TVertexKey, TVertexValue> _vertices;
-        private IDictionary<TVertexKey, IDictionary<TVertexKey, TEdgeValue>> _successors;
-        private IDictionary<TVertexKey, IDictionary<TVertexKey, TEdgeValue>> _predecessors;
+        protected IDictionary<TVertexKey, TVertexValue> _vertices;
+        protected IDictionary<TVertexKey, IDictionary<TVertexKey, TEdgeValue>> _successors;
+        protected IDictionary<TVertexKey, IDictionary<TVertexKey, TEdgeValue>> _predecessors;
+
+        protected virtual IDictionary<TVertexKey, TVertexValue> _Vertices
+        {
+            get { return this._vertices; }
+            set { this._vertices = value; }
+        }
+
+        protected virtual IDictionary<TVertexKey, IDictionary<TVertexKey, TEdgeValue>> _Successors
+        {
+            get { return this._successors; }
+            set { this._successors = value; }
+        }
+
+        protected virtual IDictionary<TVertexKey, IDictionary<TVertexKey, TEdgeValue>> _Predecessors
+        {
+            get { return this._predecessors; }
+            set { this._predecessors = value; }
+        }
 
         public DirectedGraph()
         {
@@ -20,24 +33,23 @@ namespace Spundio.GraphNet
             this._predecessors = GraphDictionaryFactory();
         }
 
-        // Constructor for ISerializable
-        public DirectedGraph(SerializationInfo info, StreamingContext context) : this()
-        {
-            this._vertices = info.GetValue("Vertices", typeof(IDictionary<TVertexKey, TVertexValue>)) as IDictionary<TVertexKey, TVertexValue>;
-            this._successors = info.GetValue("Successors", typeof(IDictionary<TVertexKey, IDictionary<TVertexKey, TEdgeValue>>)) as IDictionary<TVertexKey, IDictionary<TVertexKey, TEdgeValue>>;
+        // public DirectedGraph(SerializationInfo info, StreamingContext context) : this()
+        // {
+        //     this._vertices = info.GetValue("Vertices", typeof(IDictionary<TVertexKey, TVertexValue>)) as IDictionary<TVertexKey, TVertexValue>;
+        //     this._successors = info.GetValue("Successors", typeof(IDictionary<TVertexKey, IDictionary<TVertexKey, TEdgeValue>>)) as IDictionary<TVertexKey, IDictionary<TVertexKey, TEdgeValue>>;
 
-            // Reconstruct _predecessors from _successors
-            foreach (var vertexFrom in this._successors)
-            {
-                foreach (var vertexTo in vertexFrom.Value)
-                {
-                    this._predecessors.TryAdd<TVertexKey, IDictionary<TVertexKey, TEdgeValue>>(vertexTo.Key, this.EdgeDictionaryFactory());
-                    this._predecessors[vertexTo.Key][vertexFrom.Key] = this._successors[vertexFrom.Key][vertexTo.Key];
-                }
-            }
-        }
+        //     // Reconstruct _predecessors from _successors
+        //     foreach (var vertexFrom in this._successors)
+        //     {
+        //         foreach (var vertexTo in vertexFrom.Value)
+        //         {
+        //             this._predecessors.TryAdd<TVertexKey, IDictionary<TVertexKey, TEdgeValue>>(vertexTo.Key, this.EdgeDictionaryFactory());
+        //             this._predecessors[vertexTo.Key][vertexFrom.Key] = this._successors[vertexFrom.Key][vertexTo.Key];
+        //         }
+        //     }
+        // }
 
-        public IEnumerable<TVertexKey> Keys
+        public virtual IEnumerable<TVertexKey> Keys
         {
             get
             {
@@ -48,7 +60,7 @@ namespace Spundio.GraphNet
             }
         }
 
-        public IEnumerable<TVertexValue> Values
+        public virtual IEnumerable<TVertexValue> Values
         {
             get
             {
@@ -59,7 +71,7 @@ namespace Spundio.GraphNet
             }
         }
 
-        public IEnumerable<KeyValuePair<TVertexKey, TVertexValue>> Vertices
+        public virtual IEnumerable<KeyValuePair<TVertexKey, TVertexValue>> Vertices
         {
             get
             {
@@ -70,7 +82,7 @@ namespace Spundio.GraphNet
             }
         }
 
-        public IEnumerator<KeyValuePair<TVertexKey, TVertexValue>> GetEnumerator()
+        public virtual IEnumerator<KeyValuePair<TVertexKey, TVertexValue>> GetEnumerator()
         {
             return this.Vertices.GetEnumerator();
         }
@@ -82,17 +94,17 @@ namespace Spundio.GraphNet
             this._predecessors[vertexKey] = this.EdgeDictionaryFactory();
         }
 
-        public void AddEdge(TVertexKey vertexKeyFrom, TVertexKey vertexKeyTo, TEdgeValue edgeValue)
+        public virtual void AddEdge(TVertexKey vertexKeyFrom, TVertexKey vertexKeyTo, TEdgeValue edgeValue)
         {
             if ((this.VertexExists(vertexKeyFrom) || this.VertexExists(vertexKeyTo)) == false)
             {
-                throw new System.Exception("Both verticies must exist before making an edge!");
+                throw new System.Exception("Both vertices must exist before making an edge!");
             }
             this._successors[vertexKeyFrom][vertexKeyTo] = edgeValue;
             this._predecessors[vertexKeyTo][vertexKeyFrom] = this._successors[vertexKeyFrom][vertexKeyTo];
         }
 
-        public void RemoveVertex(TVertexKey vertexKey)
+        public virtual void RemoveVertex(TVertexKey vertexKey)
         {
             foreach (TVertexKey vertexKeyTo in this.GetSuccessorKeys(vertexKey))
             {
@@ -107,18 +119,18 @@ namespace Spundio.GraphNet
             this._predecessors.Remove(vertexKey);
         }
 
-        public void RemoveEdge(TVertexKey vertexKeyFrom, TVertexKey vertexKeyTo)
+        public virtual void RemoveEdge(TVertexKey vertexKeyFrom, TVertexKey vertexKeyTo)
         {
             this._successors[vertexKeyFrom].Remove(vertexKeyTo);
             this._predecessors[vertexKeyTo].Remove(vertexKeyFrom);
         }
         
-        public bool VertexExists(TVertexKey vertexKey)
+        public virtual bool VertexExists(TVertexKey vertexKey)
         {
             return this._vertices.ContainsKey(vertexKey);
         }
 
-        public bool EdgeExists(TVertexKey vertexKeyFrom, TVertexKey vertexKeyTo)
+        public virtual bool EdgeExists(TVertexKey vertexKeyFrom, TVertexKey vertexKeyTo)
         {
             if ((this.VertexExists(vertexKeyFrom) && this.VertexExists(vertexKeyTo)) == false)
             {
@@ -127,7 +139,7 @@ namespace Spundio.GraphNet
             return this._successors.ContainsKey(vertexKeyFrom) && this._successors[vertexKeyFrom].ContainsKey(vertexKeyTo);
         }
 
-        public TVertexValue GetVertexValue(TVertexKey vertexKey)
+        public virtual TVertexValue GetVertexValue(TVertexKey vertexKey)
         {
             if (this.VertexExists(vertexKey) == false)
             {
@@ -136,7 +148,7 @@ namespace Spundio.GraphNet
             return this._vertices[vertexKey];
         }
 
-        public TEdgeValue GetEdgeValue(TVertexKey vertexKeyFrom, TVertexKey vertexKeyTo)
+        public virtual TEdgeValue GetEdgeValue(TVertexKey vertexKeyFrom, TVertexKey vertexKeyTo)
         {
             if (this.EdgeExists(vertexKeyFrom, vertexKeyTo) == false)
             {
@@ -145,12 +157,12 @@ namespace Spundio.GraphNet
             return this._successors[vertexKeyFrom][vertexKeyTo];
         }
 
-        public IDirectedVertexView<TVertexKey, TVertexValue, TEdgeValue> this[TVertexKey vertexKey] 
+        public virtual IDirectedVertexView<TVertexKey, TVertexValue, TEdgeValue> this[TVertexKey vertexKey] 
         {
             get { return new DirectedVertexView<TVertexKey, TVertexValue, TEdgeValue>(this, vertexKey); }
         }
 
-        public IEnumerable<TVertexKey> GetSuccessorKeys(TVertexKey vertexKeyFrom)
+        public virtual IEnumerable<TVertexKey> GetSuccessorKeys(TVertexKey vertexKeyFrom)
         {
             foreach (TVertexKey successorKey in this._successors[vertexKeyFrom].Keys)
             {
@@ -158,7 +170,7 @@ namespace Spundio.GraphNet
             }
         }
 
-        public IEnumerable<TVertexKey> GetPredecessorKeys(TVertexKey vertexKeyTo)
+        public virtual IEnumerable<TVertexKey> GetPredecessorKeys(TVertexKey vertexKeyTo)
         {
             foreach (TVertexKey predecessorKey in this._predecessors[vertexKeyTo].Keys)
             {
@@ -166,7 +178,7 @@ namespace Spundio.GraphNet
             }
         }
 
-        public IEnumerable<TVertexValue> GetSuccessorValues(TVertexKey vertexKeyFrom)
+        public virtual IEnumerable<TVertexValue> GetSuccessorValues(TVertexKey vertexKeyFrom)
         {
             foreach (TVertexKey successorKey in this._successors[vertexKeyFrom].Keys)
             {
@@ -174,7 +186,7 @@ namespace Spundio.GraphNet
             }
         }
 
-        public IEnumerable<TVertexValue> GetPredecessorValues(TVertexKey vertexKeyTo)
+        public virtual IEnumerable<TVertexValue> GetPredecessorValues(TVertexKey vertexKeyTo)
         {
             foreach (TVertexKey predecessorKey in this._predecessors[vertexKeyTo].Keys)
             {
@@ -182,7 +194,7 @@ namespace Spundio.GraphNet
             }
         }
 
-        public IEnumerable<KeyValuePair<TVertexKey, TVertexValue>> GetSuccessors(TVertexKey vertexKeyFrom)
+        public virtual IEnumerable<KeyValuePair<TVertexKey, TVertexValue>> GetSuccessors(TVertexKey vertexKeyFrom)
         {
             foreach (TVertexKey successorKey in this._successors[vertexKeyFrom].Keys)
             {
@@ -191,7 +203,7 @@ namespace Spundio.GraphNet
             }
         }
 
-        public IEnumerable<KeyValuePair<TVertexKey, TVertexValue>> GetPredecessors(TVertexKey vertexKeyTo)
+        public virtual IEnumerable<KeyValuePair<TVertexKey, TVertexValue>> GetPredecessors(TVertexKey vertexKeyTo)
         {
             foreach (TVertexKey predecessorKey in this._predecessors[vertexKeyTo].Keys)
             {
@@ -200,7 +212,7 @@ namespace Spundio.GraphNet
             }
         }
 
-        public IEnumerable<TEdgeValue> GetSuccessorEdgeValues(TVertexKey vertexKeyFrom)
+        public virtual IEnumerable<TEdgeValue> GetSuccessorEdgeValues(TVertexKey vertexKeyFrom)
         {
             foreach (TVertexKey successorKey in this.GetSuccessorKeys(vertexKeyFrom))
             {
@@ -208,7 +220,7 @@ namespace Spundio.GraphNet
             }
         }
 
-        public IEnumerable<TEdgeValue> GetPredecessorEdgeValues(TVertexKey vertexKeyTo)
+        public virtual IEnumerable<TEdgeValue> GetPredecessorEdgeValues(TVertexKey vertexKeyTo)
         {
             foreach (TVertexKey predecessorKey in this.GetPredecessorKeys(vertexKeyTo))
             {
@@ -216,7 +228,7 @@ namespace Spundio.GraphNet
             }
         }
 
-        public IEnumerable<KeyValuePair<TVertexKey, TEdgeValue>> GetSuccessorEdges(TVertexKey vertexKeyFrom)
+        public virtual IEnumerable<KeyValuePair<TVertexKey, TEdgeValue>> GetSuccessorEdges(TVertexKey vertexKeyFrom)
         {
             foreach (TVertexKey successorKey in this.GetSuccessorKeys(vertexKeyFrom))
             {
@@ -225,7 +237,7 @@ namespace Spundio.GraphNet
             }
         }
 
-        public IEnumerable<KeyValuePair<TVertexKey, TEdgeValue>> GetPredecessorEdges(TVertexKey vertexKeyTo)
+        public virtual IEnumerable<KeyValuePair<TVertexKey, TEdgeValue>> GetPredecessorEdges(TVertexKey vertexKeyTo)
         {
             foreach (TVertexKey predecessorKey in this.GetPredecessorKeys(vertexKeyTo))
             {
@@ -234,27 +246,19 @@ namespace Spundio.GraphNet
             }
         }
     
-        public IDictionary<TVertexKey, TVertexValue> VertexDictionaryFactory()
+        public virtual IDictionary<TVertexKey, TVertexValue> VertexDictionaryFactory()
         {
             return new Dictionary<TVertexKey, TVertexValue>();
         }
 
-        public IDictionary<TVertexKey, IDictionary<TVertexKey, TEdgeValue>> GraphDictionaryFactory()
+        public virtual IDictionary<TVertexKey, IDictionary<TVertexKey, TEdgeValue>> GraphDictionaryFactory()
         {
             return new Dictionary<TVertexKey, IDictionary<TVertexKey, TEdgeValue>>();
         }
 
-        public IDictionary<TVertexKey, TEdgeValue> EdgeDictionaryFactory()
+        public virtual IDictionary<TVertexKey, TEdgeValue> EdgeDictionaryFactory()
         {
             return new Dictionary<TVertexKey, TEdgeValue>();
         }
-    
-        void ISerializable.GetObjectData(SerializationInfo info, StreamingContext context)
-        {
-            info.AddValue("Vertices", this._vertices);
-            info.AddValue("Successors", this._successors);
-        }
     }
-
-
 }

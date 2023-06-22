@@ -45,6 +45,4 @@ namespace Spundio.GraphNet
             get { return new PredecessorView<TVertexKey, TVertexValue, TEdgeValue>(this.Graph, this.Key); }
         }
     }
-
-
 }

@@ -11,7 +11,7 @@ namespace Spundio.GraphNet
         IUndirectedVertexView<TVertexKey, TVertexValue, TEdgeValue> this[TVertexKey vertexKeyFrom] { get; }
 
         /// <summary>
-        /// Gets the value of the edge between two verticies.
+        /// Gets the value of the edge between two vertices.
         /// </summary>
         /// <param name="vertexKeyFrom">The key of the first vertex.</param>
         /// <param name="vertexKeyTo">The key of the second vertex.</param>
@@ -39,8 +39,8 @@ namespace Spundio.GraphNet
         /// with the given vertex key.
         /// </summary>
         /// <param name="vertexKeyFrom">The vertex key the edge starts with.</param>
-        /// <returns>An enumerable of verticies (key, value).</returns>
-        IEnumerable<KeyValuePair<TVertexKey, TVertexValue>> GetVerticies(TVertexKey vertexKeyFrom);
+        /// <returns>An enumerable of vertices (key, value).</returns>
+        IEnumerable<KeyValuePair<TVertexKey, TVertexValue>> GetVertices(TVertexKey vertexKeyFrom);
         
         /// <summary>
         /// Gets the value of every edge associated
@@ -58,6 +58,4 @@ namespace Spundio.GraphNet
         /// <returns>An enumerable of edges (key, value).</returns>
         IEnumerable<KeyValuePair<TVertexKey, TEdgeValue>> GetEdges(TVertexKey vertexKeyFrom);
     }
-
-
 }

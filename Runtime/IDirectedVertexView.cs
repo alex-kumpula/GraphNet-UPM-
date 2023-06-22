@@ -10,6 +10,4 @@ namespace Spundio.GraphNet
 
         TEdgeValue this [TVertexKey vertexKeyTo] { get; set; }
     }
-
-
 }

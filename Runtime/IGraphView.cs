@@ -23,6 +23,4 @@ namespace Spundio.GraphNet
         /// <returns></returns>
         IEnumerator<IVertexView<TVertexKey, TVertexValue, TEdgeValue>> GetEnumerator();
     }
-
-
 }

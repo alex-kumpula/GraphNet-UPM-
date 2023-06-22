@@ -11,7 +11,7 @@ namespace Spundio.GraphNet
 
         IEnumerable<TVertexKey> Keys { get; }
         IEnumerable<TVertexValue> Values { get; }
-        IEnumerable<KeyValuePair<TVertexKey, TVertexValue>> Verticies { get; }
+        IEnumerable<KeyValuePair<TVertexKey, TVertexValue>> Vertices { get; }
 
 
         IEnumerable<TEdgeValue> EdgeValues { get; }
@@ -20,6 +20,4 @@ namespace Spundio.GraphNet
         TEdgeValue this [TVertexKey vertexKey] { get; set; }
         IEnumerator<KeyValuePair<TVertexKey, TEdgeValue>> GetEnumerator();
     }
-
-
 }

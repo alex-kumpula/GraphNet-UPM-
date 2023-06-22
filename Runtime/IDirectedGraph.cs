@@ -23,6 +23,4 @@ namespace Spundio.GraphNet
         IEnumerable<KeyValuePair<TVertexKey, TEdgeValue>> GetSuccessorEdges(TVertexKey vertexKeyFrom);
         IEnumerable<KeyValuePair<TVertexKey, TEdgeValue>> GetPredecessorEdges(TVertexKey vertexKeyTo);
     }
-
-
 }
